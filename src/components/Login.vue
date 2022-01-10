@@ -8,8 +8,8 @@
             <h3 @click="()=>toggle('signup')">创建账户</h3>
 <!--            <transition name="slide">-->
               <div v-bind:class="{show: isSignUp}" class="register">
-                <input type="text" placeholder="用户名" v-model="signUp.username" @change="onSignUp">
-                <input type="password" placeholder="密码" v-model="signUp.password" @change="onSignUp"
+                <input type="text" placeholder="用户名" v-model="signUp.username" @change="()=>validate(signUp)">
+                <input type="password" placeholder="密码" v-model="signUp.password" @change="()=>validate(signUp)"
                        @keyup.enter="onSignUp">
                 <p :class="{error:signUp.isError}">{{ signUp.notice }}</p>
                 <div class="button" @click="onSignUp">创建账号</div>
@@ -18,8 +18,8 @@
             <h3 @click="()=>toggle('signin')">登录</h3>
 <!--            <transition name="slide">-->
               <div v-bind:class="{show: isSignIn}" class="login">
-                <input type="text" placeholder="输入用户名" v-model="signIn.username" @change="onSignIn">
-                <input type="password" placeholder="密码" v-model="signIn.password" @change="onSignIn"
+                <input type="text" placeholder="输入用户名" v-model="signIn.username" @change="()=>validate(signIn)">
+                <input type="password" placeholder="密码" v-model="signIn.password" @change="()=>validate(signIn)"
                        @keyup.enter="onSignIn">
                 <p :class="{error:signIn.isError}">{{ signIn.notice }}</p>
                 <div class="button" @click="onSignIn"> 登录</div>
@@ -33,11 +33,10 @@
 </template>
 
 <script>
-import {request} from "../helpers/request";
 
-request('/auth/login', 'POST', {username: 'hunger', password: '123456'})
-  .then(data => console.log(data))
+import {getInfo, register} from "../apis/auth";
 
+getInfo().then(data=>console.log(data))
 export default {
   name: "Login.vue",
   data() {
@@ -80,10 +79,12 @@ export default {
       obj.notice = ""
     },
     onSignUp() {
-      this.validate(this.signUp)
+      register({username: this.signUp.username, password: this.signUp.password})
+        .then(data=>console.log(data))
     },
     onSignIn() {
-      this.validate(this.signIn)
+      register({username: this.signIn.username, password: this.signIn.password})
+        .then(data=>console.log(data))
     },
     validUsername(username) {
       return {

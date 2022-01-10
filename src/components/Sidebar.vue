@@ -14,13 +14,15 @@
 
 <script>
 import Avatar from './Avatar.vue'
+import {logout} from "../apis/auth";
 
 export default {
   name: "Sidebar.vue",
   components: {Avatar},
   methods: {
     onLogout() {
-      console.log('hi')
+      logout()
+        .then(data=>console.log(data))
     }
   }
 }
