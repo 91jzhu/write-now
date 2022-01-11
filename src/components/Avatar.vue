@@ -3,8 +3,11 @@
 </template>
 
 <script>
+import {vm} from "../helpers/eventBus";
 import {getInfo} from "../apis/auth";
-
+getInfo().then((data)=>{
+  console.log(data);
+})
 export default {
   name: "Avatar.vue",
   data() {
@@ -13,12 +16,16 @@ export default {
     }
   },
   created(){
+    vm.$on('info',username=>{
+      this.username=username
+    })
     getInfo().then(({data,isLogin})=>{
       if(isLogin){
         this.username=data.username
       }
     })
   },
+
   computed:{
     slug(){
       return this.username.charAt(0)

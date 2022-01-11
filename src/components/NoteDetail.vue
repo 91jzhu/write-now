@@ -5,12 +5,19 @@
 </template>
 
 <script>
+import {getInfo} from "../apis/auth";
+
 export default {
   name: "NoteDetail.vue",
   data () {
     return {
       msg: '笔记详情页'
     }
+  },
+  created() {
+    getInfo().then(res=>{
+      !res.isLogin&&this.$router.push({path:'/login'})
+    })
   }
 }
 </script>

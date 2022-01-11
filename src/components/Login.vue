@@ -6,25 +6,25 @@
           <div class="main"></div>
           <div class="form">
             <h3 @click="()=>toggle('signup')">创建账户</h3>
-<!--            <transition name="slide">-->
-              <div v-bind:class="{show: isSignUp}" class="register">
-                <input type="text" placeholder="用户名" v-model="signUp.username" @change="()=>validate(signUp)">
-                <input type="password" placeholder="密码" v-model="signUp.password" @change="()=>validate(signUp)"
-                       @keyup.enter="onSignUp">
-                <p :class="{error:signUp.isError}">{{ signUp.notice }}</p>
-                <div class="button" @click="onSignUp">创建账号</div>
-              </div>
-<!--            </transition>-->
+            <!--            <transition name="slide">-->
+            <div v-bind:class="{show: isSignUp}" class="register">
+              <input type="text" placeholder="用户名" v-model="signUp.username" @change="()=>validate(signUp)">
+              <input type="password" placeholder="密码" v-model="signUp.password" @change="()=>validate(signUp)"
+                     @keyup.enter="onSignUp">
+              <p :class="{error:signUp.isError}">{{ signUp.notice }}</p>
+              <div class="button" @click="onSignUp">创建账号</div>
+            </div>
+            <!--            </transition>-->
             <h3 @click="()=>toggle('signin')">登录</h3>
-<!--            <transition name="slide">-->
-              <div v-bind:class="{show: isSignIn}" class="login">
-                <input type="text" placeholder="输入用户名" v-model="signIn.username" @change="()=>validate(signIn)">
-                <input type="password" placeholder="密码" v-model="signIn.password" @change="()=>validate(signIn)"
-                       @keyup.enter="onSignIn">
-                <p :class="{error:signIn.isError}">{{ signIn.notice }}</p>
-                <div class="button" @click="onSignIn"> 登录</div>
-              </div>
-<!--            </transition>-->
+            <!--            <transition name="slide">-->
+            <div v-bind:class="{show: isSignIn}" class="login">
+              <input type="text" placeholder="输入用户名" v-model="signIn.username" @change="()=>validate(signIn)">
+              <input type="password" placeholder="密码" v-model="signIn.password" @change="()=>validate(signIn)"
+                     @keyup.enter="onSignIn">
+              <p :class="{error:signIn.isError}">{{ signIn.notice }}</p>
+              <div class="button" @click="onSignIn"> 登录</div>
+            </div>
+            <!--            </transition>-->
           </div>
         </div>
       </div>
@@ -34,7 +34,8 @@
 
 <script>
 
-import {getInfo, register,login} from "../apis/auth";
+import {getInfo, register, login} from "../apis/auth";
+import {vm} from "../helpers/eventBus";
 
 // getInfo().then(data=>console.log(data))
 export default {
@@ -80,25 +81,28 @@ export default {
     },
     onSignUp() {
       register({username: this.signUp.username, password: this.signUp.password})
-        .then(()=>{
-          this.signUp.isError=false
-          this.signUp.notice=""
-          this.$router.push({path:'notebooks'})
-        }).catch(data=>{
-        this.signUp.isError=true
-        this.signUp.notice=data.msg
+        .then(() => {
+          this.signUp.isError = false
+          this.signUp.notice = ""
+          vm.$emit('info', this.signUp.username)
+          this.$router.push({path: 'notebooks'})
+
+        }).catch(data => {
+        this.signUp.isError = true
+        this.signUp.notice = data.msg
       })
     },
     onSignIn() {
       login({username: this.signIn.username, password: this.signIn.password})
-        .then(()=>{
-            this.signIn.isError=false
-            this.signIn.notice=""
-            this.$router.push({path:'notebooks'})
+        .then(() => {
+          this.signIn.isError = false
+          this.signIn.notice = ""
+          vm.$emit('info', this.signIn.username)
+          this.$router.push({path: 'notebooks'})
         })
-        .catch(data=>{
-          this.signIn.isError=true
-          this.signIn.notice=data.msg
+        .catch(data => {
+          this.signIn.isError = true
+          this.signIn.notice = data.msg
         })
     },
     validUsername(username) {
@@ -200,8 +204,9 @@ export default {
       height: 0;
       overflow: hidden;
       transition: height .4s;
-      &.show{
-        height:193px
+
+      &.show {
+        height: 193px
       }
 
       input {
