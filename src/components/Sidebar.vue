@@ -22,7 +22,9 @@ export default {
   methods: {
     onLogout() {
       logout()
-        .then(data=>console.log(data))
+        .then(()=>{
+          this.$router.push({path:"login"})
+        })
     }
   }
 }

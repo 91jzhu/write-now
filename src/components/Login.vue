@@ -34,7 +34,7 @@
 
 <script>
 
-import {getInfo, register} from "../apis/auth";
+import {getInfo, register,login} from "../apis/auth";
 
 getInfo().then(data=>console.log(data))
 export default {
@@ -80,11 +80,26 @@ export default {
     },
     onSignUp() {
       register({username: this.signUp.username, password: this.signUp.password})
-        .then(data=>console.log(data))
+        .then(()=>{
+          this.signUp.isError=false
+          this.signUp.notice=""
+          this.$router.push({path:'notebooks'})
+        }).catch(data=>{
+        this.signUp.isError=true
+        this.signUp.notice=data.msg
+      })
     },
     onSignIn() {
-      register({username: this.signIn.username, password: this.signIn.password})
-        .then(data=>console.log(data))
+      login({username: this.signIn.username, password: this.signIn.password})
+        .then(()=>{
+            this.signIn.isError=false
+            this.signIn.notice=""
+            this.$router.push({path:'notebooks'})
+        })
+        .catch(data=>{
+          this.signIn.isError=true
+          this.signIn.notice=data.msg
+        })
     },
     validUsername(username) {
       return {
