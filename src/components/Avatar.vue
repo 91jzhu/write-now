@@ -1,16 +1,27 @@
 <template>
-  <span :title="user.username">{{ slug }}</span>
+  <span :title="username">{{ slug }}</span>
 </template>
 
 <script>
+import {getInfo} from "../apis/auth";
+
 export default {
   name: "Avatar.vue",
   data() {
     return {
-      user: {
-        username: 'hunger'
-      },
-      slug: 'H'
+      username: '未登录'
+    }
+  },
+  created(){
+    getInfo().then(({data,isLogin})=>{
+      if(isLogin){
+        this.username=data.username
+      }
+    })
+  },
+  computed:{
+    slug(){
+      return this.username.charAt(0)
     }
   }
 }

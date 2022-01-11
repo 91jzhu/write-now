@@ -36,7 +36,7 @@
 
 import {getInfo, register,login} from "../apis/auth";
 
-getInfo().then(data=>console.log(data))
+// getInfo().then(data=>console.log(data))
 export default {
   name: "Login.vue",
   data() {
