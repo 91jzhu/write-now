@@ -1,14 +1,26 @@
 <template>
-  <div id="notebook-list">
-    <h1>{{ msg }}</h1>
-    <ul>
-      <li>
-        <router-link to="/note/1">笔记本1</router-link>
-      </li>
-      <li>
-        <router-link to="/note/2">笔记本2</router-link>
-      </li>
-    </ul>
+  <div class="detail" id="notebook-list">
+    <header>
+      <a href="#" class="btn" @click.prevent="onCreate"><i class="iconfont icon-plus"></i> 新建笔记本</a>
+    </header>
+    <main>
+      <div class="layout">
+        <h3>笔记本列表({{ notebooks.length }})</h3>
+        <div class="book-list">
+          <router-link v-for="notebook in notebooks" to="/note/1" class="notebook">
+            <div>
+              <span class="iconfont icon-notebook"></span> {{ notebook.title }}
+              <span>{{ notebook.noteCounts }}</span>
+              <span class="action" @click.stop.prevent="onEdit(notebook)">编辑</span>
+              <span class="action" @click.stop.prevent="onDelete(notebook)">删除</span>
+              <span class="date">{{ notebook.friendlyCreatedAt }}</span>
+            </div>
+          </router-link>
+        </div>
+      </div>
+
+    </main>
+
   </div>
 </template>
 
@@ -19,17 +31,19 @@ export default {
   name: "NotebookList.vue",
   data() {
     return {
+      notebooks: [],
       msg: '笔记本列表'
     }
   },
   created() {
-    getInfo().then(res=>{
-      !res.isLogin&&this.$router.push({path:'/login'})
+    getInfo().then(res => {
+      !res["isLogin"] && this.$router.push({path: '/login'})
     })
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+@import url('../assets/css/NotebookList.less');
 
 </style>

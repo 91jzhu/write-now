@@ -16,7 +16,7 @@ export default {
   },
   created() {
     getInfo().then(res=>{
-      !res.isLogin&&this.$router.push({path:'/login'})
+      !res['isLogin']&&this.$router.push({path:'/login'})
     })
   }
 }
