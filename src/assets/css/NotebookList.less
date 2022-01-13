@@ -1,13 +1,15 @@
 #notebook-list {
   flex: 1;
   max-height: 100vh;
-  overflow:auto;
+  overflow: auto;
+
   .btn {
     font-size: 12px;
     color: #666;
     cursor: pointer;
     margin-left: 10px;
   }
+
   .btn .iconfont {
     font-size: 12px;
   }
@@ -30,6 +32,7 @@
   main {
     padding: 30px 40px;
   }
+
   .layout {
 
     max-width: 966px;
@@ -37,7 +40,7 @@
   }
 
 
-  main h3{
+  main h3 {
     font-size: 12px;
     color: #000;
   }
@@ -52,6 +55,7 @@
     background-color: #fff;
     border-radius: 4px;
     font-weight: bold;
+
     &::-webkit-scrollbar {
       display: none; /* Chrome Safari */
     }
@@ -63,19 +67,23 @@
     font-weight: bold;
     color: #b3c0c8;
   }
-  main .date{
+
+  main .date {
     margin-right: 12px;
   }
+
   main .iconfont {
     color: #1687ea;
     margin-right: 8px;
   }
+
   main .notebook {
     display: block;
     cursor: pointer;
   }
-  main a.notebook{
-    display:block;
+
+  main a.notebook {
+    display: block;
   }
 
   main a.notebook .coat {
@@ -91,16 +99,31 @@
   }
 
 }
-.wrapper{
+
+.wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  .counts{
-    margin-left: 4px;
-    vertical-align: middle;
+  @media (max-width: 500px){
+    justify-content: flex-end;
+  }
+  &.top {
+    @media (max-width: 500px) {
+      justify-content: flex-start;
+    }
+    .counts {
+      margin-left: 4px;
+      vertical-align: middle;
+    }
   }
 }
-.coat{
+
+.coat {
+  @media (max-width: 500px) {
+    flex-direction: column;
+    min-height: 100px;
+  }
+
   &:hover {
     background-color: #f7fafd;
   }
