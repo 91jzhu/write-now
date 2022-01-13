@@ -22,6 +22,9 @@ export default {
   margin: 0;
   padding: 0;
 }
+.icon-notebook:before {
+  content: none;
+}
 
 html, body, #app {
   height: 100%;

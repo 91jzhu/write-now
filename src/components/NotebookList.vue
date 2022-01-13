@@ -1,19 +1,26 @@
 <template>
   <div class="detail" id="notebook-list">
     <header>
-      <a href="#" class="btn" @click.prevent="onCreate"><i class="iconfont icon-plus"></i> 新建笔记本</a>
+      <el-button type="primary" size="medium" plain round icon="el-icon-brush" @click.prevent="onCreate">新建笔记本
+      </el-button>
+      <!--      <a href="#" class="btn" @click.prevent="onCreate"><i class="iconfont icon-plus"></i> </a>-->
     </header>
     <main>
       <div class="layout">
-        <h3>笔记本列表({{ notebooks.length }})</h3>
+        <h2>笔记本列表({{ notebooks.length }})</h2>
         <div class="book-list">
           <router-link v-for="notebook in notebooks" to="/note/1" class="notebook">
-            <div>
-              <span class="iconfont icon-notebook"></span> {{ notebook.title }}
-              <span>{{ notebook['noteCounts']}}</span>
-              <span class="action" @click.stop.prevent="onEdit(notebook)">编辑</span>
-              <span class="action" @click.stop.prevent="onDelete(notebook)">删除</span>
-              <span class="date">{{standard(notebook['createdAt'])}}</span>
+            <div class="coat">
+              <div class="wrapper">
+                <i class="el-icon-reading"></i>
+                <span class="iconfont icon-notebook"></span> {{ notebook.title }}
+                <span class="counts">{{ notebook['noteCounts'] }}</span>
+              </div>
+              <div class="wrapper">
+                <span class="date">{{ standard(notebook['createdAt']) }}</span>
+                <el-button @click.stop.prevent="onEdit(notebook)" type="primary" icon="el-icon-edit" round size="small">编辑</el-button>
+                <el-button @click.stop.prevent="onDelete(notebook)" type="danger" icon="el-icon-delete" circle size="small"></el-button>
+              </div>
             </div>
           </router-link>
         </div>
@@ -46,32 +53,62 @@ export default {
   methods: {
     standard,
     onCreate() {
-      const title = window.prompt('请输入笔记本的标题')
-      if (title.trim() === '') {
-        alert('标题不能为空')
-        return
-      }
-      addNotebook({title})
+      this.$prompt('请输入笔记本的标题', '新建笔记本', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^.{1,16}$/,
+        inputErrorMessage: '标题格式不正确，长度应不超过16个字符且不为空'
+      }).then(({value}) => addNotebook({title: value}))
         .then(res => {
           this.notebooks.unshift(res.data)
-          alert(res.msg)
-        })
+          this.$message({type: 'success', message: res.msg})
+        }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消新增'
+        });
+      })
     },
     onEdit(notebook) {
-      let title = window.prompt('修改标题', notebook.title)
-      updateNotebook(notebook.id, {title})
-        .then(res => {
-          notebook.title = title
-          alert(res.msg)
-        })
-
+      let title
+      this.$prompt('请输入新的的标题', '编辑标题', {
+        inputPlaceholder:notebook.title,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^.{1,16}$/,
+        inputErrorMessage: '标题格式不正确，长度应不超过16个字符且不为空'
+      }).then(({value}) => {
+        title = value
+        return updateNotebook(notebook.id, {title})
+      }).then(res => {
+        notebook.title = title
+        this.$message({type: 'success', message: res.msg})
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消编辑'
+        });
+      })
     },
     onDelete(notebook) {
-      let confirm = window.confirm('是否删除')
-      confirm && deleteNotebook(notebook.id).then(res => {
+      this.$confirm('此操作将笔记本放入回收站, 是否继续?', '删除笔记本', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() =>
+        deleteNotebook(notebook.id)
+      ).then(() => {
         this.notebooks = this.notebooks.filter(item => item.id !== notebook.id)
-        alert(res.msg)
-      })
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 }

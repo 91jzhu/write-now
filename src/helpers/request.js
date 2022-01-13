@@ -1,8 +1,9 @@
 import axios from "axios";
+import {Message} from "element-ui";
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.baseURL = 'https://note-server.hunger-valley.com'
-axios.defaults.withCredentials=true
+axios.defaults.withCredentials = true
 
 function request(url, type = 'GET', data = {}) {
   return new Promise((resolve, reject) => {
@@ -22,10 +23,19 @@ function request(url, type = 'GET', data = {}) {
       if (res.status === 200) {
         resolve(res.data)
       } else {
+        Message({
+          type: 'error',
+          message: res.data.msg
+        })
         reject(res.data)
       }
-    }).catch(err =>
-      reject({msg: '网络异常'})
+    }).catch(() => {
+        Message({
+          type: 'error',
+          message: '网络异常'
+        })
+        reject({msg: '网络异常'})
+      }
     )
   })
 }
