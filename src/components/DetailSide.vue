@@ -29,16 +29,15 @@
 import {getAll, addNotebook} from '../apis/notebook'
 import {vm} from '../helpers/eventBus'
 import {standard} from "../helpers/util";
-import {getAllNotes} from "../apis/notes";
+import {addNote, getAllNotes} from "../apis/notes";
 
 export default {
   created() {
-    getAll()
-      .then(res => {
-        this.notebooks = res.data
-        this.curBook = this.notebooks.find(notebook => notebook.id === this.$route.query.notebookId)
+    getAll().then(res => {
+      this.notebooks = res.data
+      this.curBook = this.notebooks.find(notebook => notebook.id.toString() === this.$route.query.notebookId)
           || this.notebooks[0] || {}
-        return getAll({notebookId: this.curBook.id})
+        return getAllNotes({notebookId: this.curBook.id})
       }).then(res => {
       this.notes = res.data
       this.$emit('update:notes', this.notes)
@@ -69,7 +68,7 @@ export default {
     },
 
     addNote() {
-      addNotebook({notebookId: this.curBook.id})
+      addNote({notebookId: this.curBook.id})
         .then(res => {
           console.log(res)
           this.notes.unshift(res.data)
