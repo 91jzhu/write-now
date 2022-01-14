@@ -17,7 +17,7 @@
     <ul class="notes">
       <li v-for="note in notes">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
-          <span class="date">{{standard(note['createdAt'])}}</span>
+          <span class="date">{{standard(note['updatedAt'])}}</span>
           <span class="title">{{ note.title }}</span>
         </router-link>
       </li>
@@ -29,6 +29,7 @@
 import {getAll, addNotebook} from '../apis/notebook'
 import {vm} from '../helpers/eventBus'
 import {standard} from "../helpers/util";
+import {getAllNotes} from "../apis/notes";
 
 export default {
   created() {
@@ -60,7 +61,7 @@ export default {
         return this.$router.push({path: '/trash'})
       }
       this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
-      getAll({notebookId})
+      getAllNotes({notebookId})
         .then(res => {
           this.notes = res.data
           this.$emit('update:notes', this.notes)
