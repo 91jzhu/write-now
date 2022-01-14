@@ -2,9 +2,9 @@
   <div id="sidebar">
     <Avatar/>
     <div class="icons">
-      <router-link to="/note/1" title="笔记"><i class="el-icon-tickets"></i></router-link>
+      <router-link to="/note" title="笔记"><i class="el-icon-tickets"></i></router-link>
       <router-link to="/notebooks" title="笔记本"><i class="el-icon-folder-opened"></i></router-link>
-      <router-link to="/trash/2" title="回收站"><i class="el-icon-takeaway-box"></i></router-link>
+      <router-link to="/trash" title="回收站"><i class="el-icon-takeaway-box"></i></router-link>
     </div>
     <div class="logout" @click="onLogout">
       <i class="iconfont icon-logout"></i>

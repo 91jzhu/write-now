@@ -8,7 +8,7 @@
       <div class="layout">
         <h2>笔记本列表({{ notebooks.length }})</h2>
         <div class="book-list">
-          <router-link v-for="notebook in notebooks" to="/note/1" class="notebook">
+          <router-link v-for="notebook in notebooks" :to="`/note?notebookId=${notebook.id}`" class="notebook">
             <div class="coat">
               <div class="wrapper top">
                 <i class="el-icon-reading"></i>
