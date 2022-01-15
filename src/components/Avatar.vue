@@ -6,7 +6,7 @@
 import {vm} from "../helpers/eventBus";
 import {getInfo} from "../apis/auth";
 getInfo().then((data)=>{
-  console.log(data);
+
 })
 export default {
   name: "Avatar.vue",

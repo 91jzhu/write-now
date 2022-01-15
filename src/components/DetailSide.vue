@@ -16,7 +16,8 @@
     </div>
     <ul class="notes">
       <li v-for="note in notes">
-        <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
+        <router-link @click="()=>toggleNote(note)"
+          :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{standard(note['updatedAt'])}}</span>
           <span class="title">{{ note.title }}</span>
         </router-link>
@@ -26,7 +27,7 @@
 </template>
 
 <script>
-import {getAll, addNotebook} from '../apis/notebook'
+import {getAll} from '../apis/notebook'
 import {vm} from '../helpers/eventBus'
 import {standard} from "../helpers/util";
 import {addNote, getAllNotes} from "../apis/notes";
@@ -40,8 +41,8 @@ export default {
         return getAllNotes({notebookId: this.curBook.id})
       }).then(res => {
       this.notes = res.data
-      this.$emit('update:notes', this.notes)
-      vm.$emit('update:notes', this.notes)
+      this.$emit('update:notes', this.notes[0])
+      // vm.$emit('update:notes', this.notes)
     })
   },
 
@@ -55,6 +56,9 @@ export default {
 
   methods: {
     standard,
+    toggleNote(note){
+      console.log(note);
+    },
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
@@ -63,7 +67,7 @@ export default {
       getAllNotes({notebookId})
         .then(res => {
           this.notes = res.data
-          this.$emit('update:notes', this.notes)
+          this.$emit('update:notes', this.notes[0])
         })
     },
 
