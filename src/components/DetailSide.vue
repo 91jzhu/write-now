@@ -41,9 +41,9 @@ export default {
       }).then(res => {
       this.notes = res.data
       this.$emit('update:notes',this.notes)
+      vm.$emit('update:notes',this.notes)
     })
   },
-  // props:['curNote'],
   data() {
     return {
       notebooks: [],

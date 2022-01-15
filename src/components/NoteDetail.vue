@@ -1,12 +1,12 @@
 <template>
   <div id="note" class="detail">
-    <DetailSide  @update:notes="val=>this.notes=val"/>
+    <DetailSide @update:notes="notesChange"/>
     <div class="note-detail">
-      <div class="note-empty">请选择笔记</div>
-      <div class="note-detail-ct">
+      <div class="note-empty" v-if="!curNote">请选择笔记或新增笔记</div>
+      <div class="note-detail-ct" v-else>
         <div class="note-bar">
-          <span> 创建日期: {{ curNote.createdAt ? standard(curNote.createdAt) : '未知' }}</span>
-          <span> 更新日期: {{ curNote.updatedAt ? standard(curNote.updatedAt) : '未知' }}</span>
+          <span> 创建日期: {{ curNote['createdAt'] ? standard(curNote.createdAt) : '未知' }}</span>
+          <span> 更新日期: {{ curNote['updatedAt'] ? standard(curNote.updatedAt) : '未知' }}</span>
           <span>{{ curNote.status ? curNote.status : '未保存' }}</span>
           <span class="iconfont icon-delete"></span>
           <span class="iconfont icon-fullscreen"></span>
@@ -34,28 +34,32 @@ import {standard} from "../helpers/util";
 import {vm} from "../helpers/eventBus";
 
 export default {
-  name: "NoteDetail.vue",
   components: {DetailSide},
   data() {
     return {
       curNote: {},
-      notes:[]
+      notes: []
     }
   },
   created() {
-
     getInfo().then(res => {
       !res["isLogin"] && this.$router.push({path: '/login'})
     })
+    vm.$on('update:notes', val => {
+      this.curNote = val[0]
+    })
   },
-  beforeRouteUpdate(to,from,next){
-    console.log(to,from)
-    this.curNote=this.notes.find(note=>note.id.toString()===to.query.noteId)
-    console.log(this.curNote);
+  beforeRouteUpdate(to, from, next) {
+    this.curNote = this.notes.find(note => note.id.toString() === to.query.noteId)
     next()
   },
+
   methods: {
     standard,
+    notesChange(val){
+      this.notes=val
+      this.curNote=val[0]
+    }
   }
 }
 </script>
