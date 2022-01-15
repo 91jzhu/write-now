@@ -15,9 +15,8 @@
       <div>标题</div>
     </div>
     <ul class="notes">
-      <li v-for="note in notes">
-        <router-link @click="()=>toggleNote(note)"
-          :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
+      <li v-for="note in notes" @click="()=>toggleNote(note)">
+        <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{standard(note['updatedAt'])}}</span>
           <span class="title">{{ note.title }}</span>
         </router-link>
@@ -57,7 +56,7 @@ export default {
   methods: {
     standard,
     toggleNote(note){
-      console.log(note);
+      vm.$emit('toggleNote',note)
     },
     handleCommand(notebookId) {
       if (notebookId === 'trash') {

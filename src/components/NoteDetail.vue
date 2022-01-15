@@ -5,20 +5,21 @@
       <div class="note-empty">请选择笔记</div>
       <div class="note-detail-ct">
         <div class="note-bar">
-          <span> 创建日期:{{standard(curNote.createdAt)}}</span>
-          <span> 更新日期:{{standard(curNote.updatedAt)}}</span>
+          <span> 创建日期:{{ standard(curNote.createdAt) }}</span>
+          <span> 更新日期:{{ standard(curNote.updatedAt) }}</span>
           <span> 已保存</span>
           <span class="iconfont icon-delete"></span>
           <span class="iconfont icon-fullscreen"></span>
         </div>
         <div class="note-title">
-          {{curNote.title}}
+          {{ curNote.title }}
           <input type="text" v-model="curNote.title"
                  placeholder="输入标题">
         </div>
         <div class="editor">
-          {{curNote.content}}
-          <textarea v-model="curNote.content" @keydown="statusText='正在输入...'" placeholder="输入内容, 支持 markdown 语法"></textarea>
+          {{ curNote.content }}
+          <textarea v-model="curNote.content" @keydown="statusText='正在输入...'"
+                    placeholder="输入内容, 支持 markdown 语法"></textarea>
           <div class="preview markdown-body">
           </div>
         </div>
@@ -39,27 +40,33 @@ export default {
   components: {DetailSide},
   data() {
     return {
-      curNote:{
-        title:'',
-        content:'',
-        createdAt:'',
-        updatedAt:'',
-        status:''
+      curNote: {
+        title: '',
+        content: '',
+        createdAt: '',
+        updatedAt: '',
+        status: ''
       }
     }
   },
   created() {
+    vm.$on('toggleNote', (note) => {
+      this.curChange(note)
+    })
     getInfo().then(res => {
       !res["isLogin"] && this.$router.push({path: '/login'})
     })
   },
-  methods:{
+  methods: {
     standard,
-    notebookChange({content,title,createdAt,updatedAt}){
-      this.curNote.title=title
-      this.curNote.content=content
-      this.curNote.createdAt=createdAt
-      this.curNote.updatedAt=updatedAt
+    curChange({content = '', title, createdAt, updatedAt} = {}) {
+      this.curNote.title = title
+      this.curNote.content = content
+      this.curNote.createdAt = createdAt
+      this.curNote.updatedAt = updatedAt
+    },
+    notebookChange(note) {
+      this.curChange(note)
     }
   }
 }
