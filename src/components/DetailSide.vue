@@ -15,7 +15,7 @@
       <div>标题</div>
     </div>
     <ul class="notes">
-      <li v-for="note in notes" @click="()=>toggleNote(note)">
+      <li v-for="note in notes">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{standard(note['updatedAt'])}}</span>
           <span class="title">{{ note.title }}</span>
@@ -40,11 +40,10 @@ export default {
         return getAllNotes({notebookId: this.curBook.id})
       }).then(res => {
       this.notes = res.data
-      this.$emit('update:notes', this.notes[0])
-      // vm.$emit('update:notes', this.notes)
+      this.$emit('update:notes',this.notes)
     })
   },
-
+  // props:['curNote'],
   data() {
     return {
       notebooks: [],
@@ -52,12 +51,8 @@ export default {
       curBook: {}
     }
   },
-
   methods: {
     standard,
-    toggleNote(note){
-      vm.$emit('toggleNote',note)
-    },
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
@@ -66,7 +61,7 @@ export default {
       getAllNotes({notebookId})
         .then(res => {
           this.notes = res.data
-          this.$emit('update:notes', this.notes[0])
+          this.$emit('update:notes',this.notes)
         })
     },
 

@@ -1,9 +1,5 @@
 const standard=(string)=>{
   let str
-  if(!string){
-    str='未知'
-    return str
-  }
   let time=Date.parse(string)
   let now=Date.now()
   let space=now -time
