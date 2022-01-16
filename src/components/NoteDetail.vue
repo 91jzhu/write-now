@@ -9,7 +9,7 @@
           <span> 更新日期: {{ curNote['updatedAt'] ? standard(curNote['updatedAt']) : '未知' }}</span>
           <span>{{ status }}</span>
           <span class="iconfont icon-delete" @click="deleteNote"></span>
-          <span class="iconfont icon-fullscreen"></span>
+          <span class="iconfont icon-fullscreen" @click="translation"></span>
         </div>
         <div class="note-title">
           <input type="text" v-model="curNote.title" @input="saveNote"
@@ -17,8 +17,11 @@
         </div>
         <div class="editor">
           <textarea v-model="curNote.content" @keydown="status='正在输入...'" @input="saveNote"
-                    placeholder="输入内容, 支持 markdown 语法"></textarea>
-          <div class="preview markdown-body"></div>
+                    placeholder="输入内容, 支持 markdown 语法" v-show="!PreviewShow"></textarea>
+          <div class="preview markdown-body" v-show="PreviewShow"
+               v-html="preview">
+            {{ preview }}
+          </div>
         </div>
       </div>
 
@@ -33,13 +36,19 @@ import {standard} from "../helpers/util";
 import {vm} from "../helpers/eventBus";
 import {debounce} from "../helpers/debounce";
 import {deleteNote, updateNote} from "../apis/notes";
+import MarkDownIt from 'markdown-it'
+
+let md = new MarkDownIt()
+
 export default {
   components: {DetailSide},
   data() {
     return {
       curNote: {},
       notes: [],
-      status: '笔记未改动'
+      status: '笔记未改动',
+      PreviewShow: false,
+      preview:''
     }
   },
   created() {
@@ -57,6 +66,10 @@ export default {
 
   methods: {
     standard,
+    translation(){
+      this.PreviewShow=!this.PreviewShow
+      this.preview=md.render(this.curNote.content)
+    },
     notesChange(val) {
       this.notes = val
       this.curNote = val[0]
@@ -75,14 +88,14 @@ export default {
           })
       }, 500)
     },
-    deleteNote(){
-      deleteNote({noteId:this.curNote.id})
-        .then(data=>{
+    deleteNote() {
+      deleteNote({noteId: this.curNote.id})
+        .then(data => {
           this.$message.success(data.msg)
-          this.notes=this.notes.filter(note=>note.id!==this.curNote.id)
-          this.curNote=this.notes[0]
-          this.$router.replace({path:'/note'})
-          vm.$emit('update:notes',this.notes)
+          this.notes = this.notes.filter(note => note.id !== this.curNote.id)
+          this.curNote = this.notes[0]
+          this.$router.replace({path: '/note'})
+          vm.$emit('update:notes', this.notes)
         })
     },
   }
