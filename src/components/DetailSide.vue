@@ -42,6 +42,9 @@ export default {
       this.notes = res.data
       this.$emit('update:notes',this.notes)
       vm.$emit('update:notes',this.notes)
+      vm.$on('update:notes',(notes)=>{
+        this.notes=notes
+      })
     })
   },
   data() {
