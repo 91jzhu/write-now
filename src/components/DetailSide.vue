@@ -30,6 +30,7 @@ import {getAll} from '../apis/notebook'
 import {vm} from '../helpers/eventBus'
 import {standard} from "../helpers/util";
 import {addNote, getAllNotes} from "../apis/notes";
+import {Message} from "element-ui";
 
 export default {
   created() {
@@ -72,6 +73,7 @@ export default {
       addNote({notebookId: this.curBook.id})
         .then(res => {
           console.log(res)
+          Message.success('添加成功')
           this.notes.unshift(res.data)
         })
     }

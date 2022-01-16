@@ -73,7 +73,7 @@ export default {
           .catch(() => {
             this.status = '保存错误'
           })
-      }, 1000)
+      }, 500)
     },
     deleteNote(){
       deleteNote({noteId:this.curNote.id})
@@ -81,6 +81,7 @@ export default {
           this.$message.success(data.msg)
           this.notes=this.notes.filter(note=>note.id!==this.curNote.id)
           this.curNote=this.notes[0]
+          this.$router.replace({path:'/note'})
           vm.$emit('update:notes',this.notes)
         })
     },
