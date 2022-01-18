@@ -33,38 +33,38 @@
 
 <script>
 import {getInfo} from "../apis/auth";
-import {addNotebook, deleteNotebook, getAll, updateNotebook} from "../apis/notebook";
 import {standard} from "../helpers/util";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   name: "NotebookList.vue",
   data() {
-    return {
-      notebooks: [],
-    }
+    return {}
   },
   created() {
     getInfo().then(res => {
       !res["isLogin"] && this.$router.push({path: '/login'})
     })
-    getAll().then(res => {
-      this.notebooks = res.data
-    })
+    this.$store.dispatch('getNotebooks')
+  },
+  computed: {
+    ...mapGetters(['notebooks'])
   },
   methods: {
     standard,
+    ...mapActions(['getNotebooks', 'addNotebook', 'updateNotebook', 'deleteNotebook']),
     onCreate() {
       this.$prompt('请输入笔记本的标题', '新建笔记本', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPattern: /^.{1,16}$/,
         inputErrorMessage: '标题格式不正确，长度应不超过20个字符且不为空'
-      }).then(({value}) => addNotebook({title: value}))
-        .then(res => {
-          this.notebooks.unshift(res.data)
-          this.$message({type: 'success', message: res.msg})
+      }).then(({value}) => this.addNotebook({title: value}))
+        .then(() => {
+          this.$message.success('新增成功')
         }).catch(() => this.$message.info('取消新增'))
     },
+
     onEdit(notebook) {
       let title
       this.$prompt('请输入新的的标题', '编辑标题', {
@@ -74,22 +74,21 @@ export default {
         inputPattern: /^.{1,16}$/,
         inputErrorMessage: '标题格式不正确，长度应不超过20个字符且不为空'
       }).then(({value}) => {
-        title = value
-        return updateNotebook(notebook.id, {title})
-      }).then(res => {
+        this.updateNotebook({notebookId: notebook.id, title: value})
+      }).then(() => {
         notebook.title = title
-        this.$message.success(res.msg)
+        this.$message.success('修改成功')
       }).catch(() => this.$message.info('取消编辑'))
     },
+
     onDelete(notebook) {
       this.$confirm('此操作将笔记本放入回收站, 是否继续?', '删除笔记本', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() =>
-        deleteNotebook(notebook.id)
+        this.deleteNotebook({notebookId: notebook.id})
       ).then(() => {
-        this.notebooks = this.notebooks.filter(item => item.id !== notebook.id)
         this.$message.success('删除成功!');
       }).catch(() => this.$message.info('已取消删除'))
     }
@@ -99,5 +98,4 @@ export default {
 
 <style scoped lang="less">
 @import url('../assets/css/NotebookList.less');
-
 </style>

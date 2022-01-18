@@ -16,7 +16,7 @@
                  placeholder="输入标题" @keydown="status='正在输入...'">
         </div>
         <div class="editor">
-          <textarea v-model="curNote.content" @keydown="status='正在输入...'" @input="saveNote"
+          <textarea v-model="curNote.content" @keydown.stop="status='正在输入...'" @input="saveNote"
                     placeholder="输入内容, 支持 markdown 语法" v-show="!PreviewShow"></textarea>
           <div class="preview markdown-body" v-show="PreviewShow"
                v-html="preview">
