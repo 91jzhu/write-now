@@ -76,7 +76,6 @@ export default {
       }).then(({value}) => {
         this.updateNotebook({notebookId: notebook.id, title: value})
       }).then(() => {
-        notebook.title = title
         this.$message.success('修改成功')
       }).catch(() => this.$message.info('取消编辑'))
     },
