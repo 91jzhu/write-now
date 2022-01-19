@@ -29,13 +29,15 @@
 import {standard} from "../helpers/util";
 import {addNote, getAllNotes} from "../apis/notes";
 import {Message} from "element-ui";
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
 export default {
   created() {
     this.getNotebooks().then(()=>{
-      this.$store.commit('setCurBook',{curBookId:this.$route.query.notebookId})
+      this.setCurBook({curBookId:this.$route.query.notebookId})
       this.getNotes({notebookId:this.curBook.id})
+    }).then(()=>{
+      this.setCurNote({curNoteId:this.$route.query.noteId})
     })
   },
   data() {
@@ -46,12 +48,13 @@ export default {
   },
   methods: {
     standard,
+    ...mapMutations(['setCurBook','setCurNote']),
     ...mapActions(['getNotes','getNotebooks']),
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
       }
-      this.$store.commit('setCurBook',{curBookId:notebookId})
+      this.setCurBook({curBookId:notebookId})
       this.getNotes({notebookId})
     },
 

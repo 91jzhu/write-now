@@ -1,14 +1,19 @@
 import {getAllNotes, updateNote, deleteNote, addNote} from "../../apis/notes";
 
 const state = {
-  notes: [],
+  notes: null,
   curNoteId: null
 }
 
 const getters = {
   notes(state) {
-    return state.notes||[]
+    return state.notes || []
   },
+  curNote(state) {
+    if (!Array.isArray(state.notes)) return {}
+    if (!state.curNoteId) return state.notes[0]
+    return state.notes.find(item => item.id == state.curNoteId) || {}
+  }
 }
 
 const mutations = {
@@ -24,7 +29,10 @@ const mutations = {
     target.content = content
   },
   deleteNote(state, {noteId}) {
-    state.notes = state.notes.filter(item => item.id !== noteId)
+    state.notes = state.notes.filter(item => item.id != noteId)
+  },
+  setCurNote(state,payload){
+    state.curNoteId=payload.curNoteId
   }
 }
 
@@ -36,19 +44,19 @@ const actions = {
       })
   },
   addNote({commit}, {notebookId, title, content}) {
-    addNote({notebookId}, {title, content})
+    return addNote({notebookId}, {title, content})
       .then(res => {
         commit('addNote', {note: res.data})
       })
   },
   updateNote({commit}, {noteId, title, content}) {
-    updateNote({noteId}, {title, content})
+    return updateNote({noteId:parseInt(noteId)}, {title, content})
       .then(() => {
-        commit('updateNote', {noteId, title, content})
+        commit('updateNote', {noteId:parseInt(noteId), title, content})
       })
   },
   deleteNote({commit}, {noteId}) {
-    deleteNote({noteId})
+    return deleteNote({noteId})
       .then(() => {
         commit('deleteNote', {noteId})
       })
