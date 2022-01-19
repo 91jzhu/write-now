@@ -42,17 +42,15 @@ export default {
     return {}
   },
   created() {
-    getInfo().then(res => {
-      !res["isLogin"] && this.$router.push({path: '/login'})
-    })
-    this.$store.dispatch('getNotebooks')
+    this.checkLogin({path:'login'})
+    this.getNotebooks()
   },
   computed: {
     ...mapGetters(['notebooks'])
   },
   methods: {
     standard,
-    ...mapActions(['getNotebooks', 'addNotebook', 'updateNotebook', 'deleteNotebook']),
+    ...mapActions(['getNotebooks', 'addNotebook', 'updateNotebook', 'deleteNotebook','checkLogin']),
     onCreate() {
       this.$prompt('请输入笔记本的标题', '新建笔记本', {
         confirmButtonText: '确定',

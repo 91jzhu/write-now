@@ -36,8 +36,8 @@
 
 import {getInfo, register, login} from "../apis/auth";
 import {vm} from "../helpers/eventBus";
+import {mapActions} from "vuex";
 
-// getInfo().then(data=>console.log(data))
 export default {
   name: "Login.vue",
   data() {
@@ -59,6 +59,11 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      loginUser:'login',
+      registerUser:'register'
+    }),
+
     toggle(type) {
       this.isSignIn = type === 'signin' && !this.isSignIn;
       this.isSignUp = type === 'signup' && !this.isSignUp;
@@ -80,29 +85,27 @@ export default {
       obj.notice = ""
     },
     onSignUp() {
-      register({username: this.signUp.username, password: this.signUp.password})
+      this.loginUser({username: this.signUp.username, password: this.signUp.password})
         .then(() => {
           this.signUp.isError = false
           this.signUp.notice = ""
-          vm.$emit('info', this.signUp.username)
           this.$router.push({path: 'notebooks'})
 
-        }).catch(data => {
+        }).catch(() => {
         this.signUp.isError = true
-        this.signUp.notice = data.msg
+        this.signUp.notice = 'ERROR'
       })
     },
     onSignIn() {
-      login({username: this.signIn.username, password: this.signIn.password})
+      this.loginUser({username: this.signIn.username, password: this.signIn.password})
         .then(() => {
           this.signIn.isError = false
           this.signIn.notice = ""
-          vm.$emit('info', this.signIn.username)
           this.$router.push({path: 'notebooks'})
         })
-        .catch(data => {
+        .catch(() => {
           this.signIn.isError = true
-          this.signIn.notice = data.msg
+          this.signIn.notice = 'ERROR'
         })
     },
     validUsername(username) {

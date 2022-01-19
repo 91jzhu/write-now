@@ -52,9 +52,7 @@ export default {
     ...mapGetters(['notes','curNote'])
   },
   created() {
-    getInfo().then(res => {
-      !res["isLogin"] && this.$router.push({path: '/login'})
-    })
+    this.checkLogin({path:'login'})
   },
   beforeRouteUpdate(to, from, next) {
     this.setCurNote({noteId:to.query.noteId})
@@ -64,7 +62,7 @@ export default {
   methods: {
     standard,
     ...mapMutations(['setCurNote']),
-    ...mapActions(['updateNote','deleteNote']),
+    ...mapActions(['updateNote','deleteNote','checkLogin']),
     translation(){
       this.PreviewShow=!this.PreviewShow
       this.preview=md.render(this.curNote.content)

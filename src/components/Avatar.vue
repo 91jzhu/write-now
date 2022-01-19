@@ -5,31 +5,22 @@
 <script>
 import {vm} from "../helpers/eventBus";
 import {getInfo} from "../apis/auth";
-getInfo().then((data)=>{
+import {mapActions, mapGetters, mapMutations} from "vuex";
 
-})
 export default {
   name: "Avatar.vue",
   data() {
     return {
-      username: '未登录'
     }
   },
   created(){
-    vm.$on('info',username=>{
-      this.username=username
-    })
-    getInfo().then(({data,isLogin})=>{
-      if(isLogin){
-        this.username=data.username
-      }
-    })
+    this.checkLogin()
   },
-
+  methods:{
+    ...mapActions(['checkLogin'])
+  },
   computed:{
-    slug(){
-      return this.username.charAt(0)
-    }
+    ...mapGetters(['slug','username']),
   }
 }
 </script>
