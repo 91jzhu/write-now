@@ -15,7 +15,7 @@
       <div>标题</div>
     </div>
     <ul class="notes">
-      <li v-for="note in notes">
+      <li v-for="note in notes" @click="change">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{standard(note['updatedAt'])}}</span>
           <span class="title">{{ note.title }}</span>
@@ -27,7 +27,7 @@
 
 <script>
 import {standard} from "../helpers/util";
-import {addNote, getAllNotes} from "../apis/notes";
+import {addNote} from "../apis/notes";
 import {Message} from "element-ui";
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
@@ -50,6 +50,9 @@ export default {
     standard,
     ...mapMutations(['setCurBook','setCurNote']),
     ...mapActions(['getNotes','getNotebooks']),
+    change(){
+      this.$route.query.noteId&&this.setCurNote({curNoteId:this.$route.query.noteId})
+    },
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})

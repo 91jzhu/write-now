@@ -9,7 +9,7 @@
           <span> 更新日期: {{ curNote['updatedAt'] ? standard(curNote['updatedAt']) : '未知' }}</span>
           <span>{{ status }}</span>
           <span class="iconfont icon-delete" @click="ondeleteNote"></span>
-<!--          <span class="iconfont icon-fullscreen" @click="translation"></span>-->
+          <span class="iconfont icon-fullscreen" @click="translation"></span>
         </div>
         <div class="note-title">
           <input type="text" v-model="curNote.title" @input="onsaveNote"
@@ -65,14 +65,10 @@ export default {
     standard,
     ...mapMutations(['setCurNote']),
     ...mapActions(['updateNote','deleteNote']),
-    // translation(){
-    //   this.PreviewShow=!this.PreviewShow
-    //   this.preview=md.render(this.curNote.content)
-    // },
-    // notesChange(val) {
-    //   this.notes = val
-    //   this.curNote = val[0]
-    // },
+    translation(){
+      this.PreviewShow=!this.PreviewShow
+      this.preview=md.render(this.curNote.content)
+    },
     onsaveNote() {
       debounce(() => {
         this.updateNote({ noteId: this.curNote.id, title: this.curNote.title, content: this.curNote.content })
