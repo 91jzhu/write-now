@@ -1,12 +1,18 @@
 import {addNotebook, deleteNotebook, getAll, updateNotebook} from "../../apis/notebook";
 
 const state = {
-  notebooks: []
+  notebooks: null,
+  curBookId: null
 }
 
 const getters = {
   notebooks(state) {
-    return state.notebooks
+    return state.notebooks || []
+  },
+  curBook(state) {
+    if (!Array.isArray(state.notebooks)) return {}
+    if (!state.curBookId) return state.notebooks[0]
+    return state.notebooks.find(item => item.id == state.curBookId) || {}
   }
 }
 
@@ -18,35 +24,38 @@ const mutations = {
     state.notebooks.unshift(payload['notebook'])
   },
   updateNotebook(state, payload) {
-    let target = state.notebooks.find(item => item.id === payload.notebookId) || {}
+    let target = state.notebooks.find(item => item.id == payload.notebookId) || {}
     target.title = payload.title
   },
   deleteNotebook(state, payload) {
-    state.notebooks = state.notebooks.filter(item => item.id !== payload.notebookId)
+    state.notebooks = state.notebooks.filter(item => item.id != payload.notebookId)
+  },
+  setCurBook(state, payload) {
+    state.curBookId = payload.curBookId
   }
 }
 
 const actions = {
   getNotebooks({commit}) {
-    getAll()
+    return getAll()
       .then(res => {
         commit('setNotebooks', {notebooks: res.data})
       })
   },
   addNotebook({commit}, payload) {
-    addNotebook({title: payload.title})
+    return addNotebook({title: payload.title})
       .then(res => {
         commit('addNotebook', {notebook: res.data})
       })
   },
   updateNotebook({commit}, payload) {
-    updateNotebook(payload.notebookId, {title: payload.title})
+    return updateNotebook(payload.notebookId, {title: payload.title})
       .then(() => {
         commit('updateNotebook', {notebookId: payload.notebookId, title: payload.title})
       })
   },
   deleteNotebook({commit}, payload) {
-    deleteNotebook(payload.notebookId)
+    return deleteNotebook(payload.notebookId)
       .then(() => {
         commit('deleteNotebook', {notebookId: payload.notebookId})
       })

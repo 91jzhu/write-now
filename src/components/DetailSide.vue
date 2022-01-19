@@ -6,7 +6,7 @@
         {{ curBook.title }} <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{ notebook.title }}</el-dropdown-item>
+        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{ notebook['title'] }}</el-dropdown-item>
         <el-dropdown-item command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -26,53 +26,38 @@
 </template>
 
 <script>
-import {getAll} from '../apis/notebook'
-import {vm} from '../helpers/eventBus'
 import {standard} from "../helpers/util";
 import {addNote, getAllNotes} from "../apis/notes";
 import {Message} from "element-ui";
+import {mapActions, mapGetters} from "vuex";
 
 export default {
   created() {
-    getAll().then(res => {
-      this.notebooks = res.data
-      this.curBook = this.notebooks.find(notebook => notebook.id.toString() === this.$route.query.notebookId)
-          || this.notebooks[0] || {}
-        return getAllNotes({notebookId: this.curBook.id})
-      }).then(res => {
-      this.notes = res.data
-      this.$emit('update:notes',this.notes)
-      vm.$emit('update:notes',this.notes)
-      vm.$on('update:notes',(notes)=>{
-        this.notes=notes
-      })
+    this.getNotebooks().then(()=>{
+      this.$store.commit('setCurBook',{curBookId:this.$route.query.notebookId})
+      this.getNotes({notebookId:this.curBook.id})
     })
   },
   data() {
-    return {
-      notebooks: [],
-      notes: [],
-      curBook: {}
-    }
+    return {}
+  },
+  computed:{
+    ...mapGetters(['notes','notebooks','curBook'])
   },
   methods: {
     standard,
+    ...mapActions(['getNotes','getNotebooks']),
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
         return this.$router.push({path: '/trash'})
       }
-      this.curBook = this.notebooks.find(notebook => notebook.id === notebookId)
-      getAllNotes({notebookId})
-        .then(res => {
-          this.notes = res.data
-          this.$emit('update:notes',this.notes)
-        })
+      this.$store.commit('setCurBook',{curBookId:notebookId})
+      this.getNotes({notebookId})
     },
 
     addNote() {
       addNote({notebookId: this.curBook.id})
         .then(res => {
-          console.log(res)
           Message.success('添加成功')
           this.notes.unshift(res.data)
         })

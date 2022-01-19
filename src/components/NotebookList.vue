@@ -66,7 +66,6 @@ export default {
     },
 
     onEdit(notebook) {
-      let title
       this.$prompt('请输入新的的标题', '编辑标题', {
         inputValue: notebook.title,
         confirmButtonText: '确定',
