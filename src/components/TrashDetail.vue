@@ -7,7 +7,7 @@
         <div>标题</div>
       </div>
       <ul class="notes">
-        <li v-for="note in trashNotes">
+        <li v-for="note in trashNotes" @click="()=>setCurrent(note.id)">
           <router-link :to="`/trash?noteId=${note.id}`">
             <span class="date">{{ standard(note['updatedAt']) }}</span>
             <span class="title">{{ note.title }}</span>
@@ -20,7 +20,7 @@
       <div class="note-bar" v-if="true">
         <span> 创建日期: {{ curTrashNote['createdAt'] ? standard(curTrashNote['createdAt']) : '未知' }}</span>
         <span> 更新日期: {{ curTrashNote['updatedAt'] ? standard(curTrashNote['updatedAt']) : '未知' }}</span>
-<!--        <span>所属笔记本: {{ curTrashNote.belongTo }}</span>-->
+        <!--        <span>所属笔记本: {{ curTrashNote.belongTo }}</span>-->
 
         <a class="btn action" @click="onRevert">恢复</a>
         <a class="btn action" @click="onDelete">彻底删除</a>
@@ -36,10 +36,9 @@
 </template>
 
 <script>
-import {mapActions} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import MarkDownIt from 'markdown-it'
 import {standard} from "../helpers/util";
-import {getAll,deleteNote,revertNote} from "../apis/trash";
 
 let md = new MarkDownIt()
 
@@ -47,54 +46,32 @@ export default {
   name: "TrashDetail.vue",
   data() {
     return {
-      trashNotes: [
-        // {
-        //   id: 3,
-        //   title: 'hello',
-        //   content: '### world',
-        //   createdAt: "",
-        //   updatedAt: '',
-        //   belongTo: '34'
-        // },
-        // {
-        //   id: 4,
-        //   title: 'fuck',
-        //   content: ' mother',
-        //   createdAt: "",
-        //   updatedAt: '',
-        //   belongTo: '12'
-        // }
-      ],
-      curTrashNote: {
-        id: 3,
-        title: 'hello',
-        content: '### world',
-        createdAt: "",
-        updatedAt: '',
-        belongTo: '55'
-      }
+      belongTo: ''
     }
   },
-  created() {
-    // this.checkLogin({path:'login'})
-    getAll().then(res=>{
-      console.log(res.data);
-      this.trashNotes=res.data
-    })
-  },
   computed: {
+    ...mapGetters(['trashNotes', 'curTrashNote']),
     preview() {
       return md.render(this.curTrashNote.content || '')
     }
   },
+  created() {
+    this.checkLogin({path: '/login'})
+    this.getTrashNotes()
+    this.setCurTrashNote({curTrashNoteId: parseInt(this.$route.query.noteId || 0)})
+  },
   methods: {
     standard,
-    ...mapActions(['checkLogin']),
+    ...mapMutations(['setCurTrashNote']),
+    ...mapActions(['checkLogin', 'getTrashNotes', 'deleteTrashNote', 'revertTrashNote']),
+    setCurrent(id){
+      this.setCurTrashNote({curTrashNoteId:id})
+    },
     onRevert() {
-      console.log('revert');
+      this.revertTrashNote({noteId: this.curTrashNote.id})
     },
     onDelete() {
-      console.log('delete');
+      this.deleteTrashNote({noteId: this.curTrashNote.id})
     }
   }
 }
@@ -103,24 +80,27 @@ export default {
 <style scoped lang="less">
 @import url(../assets/css/NoteDetail.less);
 @import url(../assets/css/DetailSide.less);
-#trash-detail{
+
+#trash-detail {
   display: flex;
   align-items: stretch;
   background-color: #fff;
-  flex:1;
+  flex: 1;
 
-  .note-bar{
-    .action{
-      float:right;
+  .note-bar {
+    .action {
+      float: right;
       margin-left: 10px;
-      padding:2px 4px;
+      padding: 2px 4px;
       font-size: 12px;
     }
   }
 }
-.notes{
-  height:calc(100vh - 67px);
+
+.notes {
+  height: calc(100vh - 67px);
   overflow: auto;
+
   &::-webkit-scrollbar {
     display: none;
   }
