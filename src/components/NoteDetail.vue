@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import {getInfo} from "../apis/auth";
 import DetailSide from "./DetailSide.vue";
 import {standard} from "../helpers/util";
 import {debounce} from "../helpers/debounce";

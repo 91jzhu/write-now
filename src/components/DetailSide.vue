@@ -59,6 +59,7 @@ export default {
       }
       this.setCurBook({curBookId:notebookId})
       this.getNotes({notebookId})
+      this.setCurNote({noteId:parseInt(this.$route.query.noteId||0)})
     },
 
     addNote() {
