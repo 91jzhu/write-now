@@ -20,7 +20,7 @@
       <div class="note-bar" v-if="true">
         <span> 创建日期: {{ curTrashNote['createdAt'] ? standard(curTrashNote['createdAt']) : '未知' }}</span>
         <span> 更新日期: {{ curTrashNote['updatedAt'] ? standard(curTrashNote['updatedAt']) : '未知' }}</span>
-        <span>所属笔记本: {{ curTrashNote.belongTo }}</span>
+<!--        <span>所属笔记本: {{ curTrashNote.belongTo }}</span>-->
 
         <a class="btn action" @click="onRevert">恢复</a>
         <a class="btn action" @click="onDelete">彻底删除</a>
@@ -39,6 +39,7 @@
 import {mapActions} from "vuex";
 import MarkDownIt from 'markdown-it'
 import {standard} from "../helpers/util";
+import {getAll,deleteNote,revertNote} from "../apis/trash";
 
 let md = new MarkDownIt()
 
@@ -47,22 +48,22 @@ export default {
   data() {
     return {
       trashNotes: [
-        {
-          id: 3,
-          title: 'hello',
-          content: '### world',
-          createdAt: "",
-          updatedAt: '',
-          belongTo: '34'
-        },
-        {
-          id: 4,
-          title: 'fuck',
-          content: ' mother',
-          createdAt: "",
-          updatedAt: '',
-          belongTo: '12'
-        }
+        // {
+        //   id: 3,
+        //   title: 'hello',
+        //   content: '### world',
+        //   createdAt: "",
+        //   updatedAt: '',
+        //   belongTo: '34'
+        // },
+        // {
+        //   id: 4,
+        //   title: 'fuck',
+        //   content: ' mother',
+        //   createdAt: "",
+        //   updatedAt: '',
+        //   belongTo: '12'
+        // }
       ],
       curTrashNote: {
         id: 3,
@@ -75,7 +76,11 @@ export default {
     }
   },
   created() {
-    this.checkLogin()
+    // this.checkLogin({path:'login'})
+    getAll().then(res=>{
+      console.log(res.data);
+      this.trashNotes=res.data
+    })
   },
   computed: {
     preview() {
@@ -111,6 +116,13 @@ export default {
       padding:2px 4px;
       font-size: 12px;
     }
+  }
+}
+.notes{
+  height:calc(100vh - 67px);
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
 

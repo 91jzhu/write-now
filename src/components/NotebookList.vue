@@ -32,12 +32,10 @@
 </template>
 
 <script>
-import {getInfo} from "../apis/auth";
 import {standard} from "../helpers/util";
 import {mapActions, mapGetters} from "vuex";
 
 export default {
-  name: "NotebookList.vue",
   data() {
     return {}
   },
