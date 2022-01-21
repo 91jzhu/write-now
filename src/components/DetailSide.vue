@@ -3,12 +3,11 @@
     <span class="btn add-note" @click="addNote">添加笔记</span>
     <el-dropdown class="notebook-title" @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
-        {{ curBook.title }} <i class="iconfont icon-down"></i>
+        {{ curBook ? curBook.title : '无笔记本' }} <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{
-            notebook['title']
-          }}
+        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">
+          {{ notebook ? notebook['title'] : '' }}
         </el-dropdown-item>
         <el-dropdown-item command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
@@ -38,16 +37,17 @@ export default {
   created() {
     this.getNotebooks().then(() => {
       this.setCurBook({curBookId: this.$route.query.notebookId})
-      this.getNotes({notebookId: this.curBook.id})
+      this.getNotes({notebookId: this.curBook ? this.curBook.id : 0})
     }).then(() => {
       this.setCurNote({curNoteId: this.$route.query.noteId})
-      this.$router.replace({
-        path: 'note',
-        query: {
-          noteId: this.curNote ? this.curNote.id : 'undefined',
-          notebookId: this.curBook.id
-        }
-      })
+      if (this.curNote && this.curBook)
+        this.$router.replace({
+          path: 'note',
+          query: {
+            noteId: this.curNote.id,
+            notebookId: this.curBook.id
+          }
+        })
     })
   },
   data() {

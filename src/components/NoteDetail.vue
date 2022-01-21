@@ -2,7 +2,7 @@
   <div id="note" class="detail">
     <DetailSide/>
     <div class="note-detail">
-      <div class="note-empty" v-if="!curNote">请选择笔记或新增笔记</div>
+      <div class="note-empty" v-if="!curNote">{{detail}}</div>
       <div class="note-detail-ct" v-else>
         <div class="note-bar">
           <span> 创建日期: {{ curNote['createdAt'] ? standard(curNote['createdAt']) : '未知' }}</span>
@@ -48,7 +48,13 @@ export default {
     }
   },
   computed:{
-    ...mapGetters(['notes','curNote'])
+    ...mapGetters(['notes','curNote','curBook']),
+    detail(){
+      if(this.curBook){
+        return '请创建笔记'
+      }
+      return '请创建笔记本'
+    }
   },
   created() {
     this.checkLogin({path:'login'})

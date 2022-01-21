@@ -76,7 +76,7 @@ export default {
     },
 
     onDelete(notebook) {
-      this.$confirm('此操作将笔记本放入回收站, 是否继续?', '删除笔记本', {
+      this.$confirm('此操作将笔记本删除, 是否继续?', '删除笔记本', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
