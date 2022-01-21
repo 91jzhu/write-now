@@ -68,6 +68,7 @@ export default {
     },
     onsaveNote() {
       debounce(() => {
+        if(!this.curNote) return
         this.updateNote({ noteId: this.curNote.id, title: this.curNote.title, content: this.curNote.content })
           .then(() => {
           this.status = '已保存'

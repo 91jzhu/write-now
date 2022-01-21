@@ -6,7 +6,10 @@
         {{ curBook.title }} <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{ notebook['title'] }}</el-dropdown-item>
+        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id">{{
+            notebook['title']
+          }}
+        </el-dropdown-item>
         <el-dropdown-item command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
@@ -17,7 +20,7 @@
     <ul class="notes">
       <li v-for="note in notes" @click="change">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
-          <span class="date">{{standard(note['updatedAt'])}}</span>
+          <span class="date">{{ standard(note['updatedAt']) }}</span>
           <span class="title">{{ note.title }}</span>
         </router-link>
       </li>
@@ -33,33 +36,48 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 
 export default {
   created() {
-    this.getNotebooks().then(()=>{
-      this.setCurBook({curBookId:this.$route.query.notebookId})
-      this.getNotes({notebookId:this.curBook.id})
-    }).then(()=>{
-      this.setCurNote({curNoteId:this.$route.query.noteId})
+    this.getNotebooks().then(() => {
+      this.setCurBook({curBookId: this.$route.query.notebookId})
+      this.getNotes({notebookId: this.curBook.id})
+    }).then(() => {
+      this.setCurNote({curNoteId: this.$route.query.noteId})
+      this.$router.replace({
+        path: 'note',
+        query: {
+          noteId: this.curNote ? this.curNote.id : 'undefined',
+          notebookId: this.curBook.id
+        }
+      })
     })
   },
   data() {
     return {}
   },
-  computed:{
-    ...mapGetters(['notes','notebooks','curBook'])
+  computed: {
+    ...mapGetters(['notes', 'notebooks', 'curBook', 'curNote'])
   },
   methods: {
     standard,
-    ...mapMutations(['setCurBook','setCurNote']),
-    ...mapActions(['getNotes','getNotebooks']),
-    change(){
-      this.$route.query.noteId&&this.setCurNote({curNoteId:this.$route.query.noteId})
+    ...mapMutations(['setCurBook', 'setCurNote']),
+    ...mapActions(['getNotes', 'getNotebooks']),
+    change() {
+      this.$route.query.noteId && this.setCurNote({curNoteId: this.$route.query.noteId})
     },
     handleCommand(notebookId) {
       if (notebookId === 'trash') {
-        return this.$router.push({path: '/trash'})
+        return this.$router.push({path: 'trash'})
       }
-      this.setCurBook({curBookId:notebookId})
-      this.getNotes({notebookId})
-      this.setCurNote({noteId:parseInt(this.$route.query.noteId||0)})
+      this.setCurBook({curBookId: notebookId})
+      this.getNotes({notebookId}).then(() => {
+        this.setCurNote({})
+        this.$router.replace({
+          path: '/note',
+          query: {
+            noteId: this.curNote ? this.curNote.id : 'undefined',
+            notebookId: this.curBook.id
+          }
+        })
+      })
     },
 
     addNote() {

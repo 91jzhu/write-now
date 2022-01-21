@@ -6,7 +6,7 @@
       <router-link to="/notebooks" title="笔记本"><i class="el-icon-folder-opened"></i></router-link>
       <router-link to="/trash" title="回收站"><i class="el-icon-takeaway-box"></i></router-link>
     </div>
-    <div class="logout" @click="onLogout">
+    <div class="logout" @click='onLogout'>
       <i class="iconfont icon-logout"></i>
     </div>
   </div>
@@ -15,16 +15,15 @@
 <script>
 import Avatar from './Avatar.vue'
 import {logout} from "../apis/auth";
+import {mapActions} from "vuex";
 
 export default {
   name: "Sidebar.vue",
   components: {Avatar},
   methods: {
-    onLogout() {
-      logout()
-        .then(()=>{
-          this.$router.push({path:"login"})
-        })
+    ...mapActions(['logout']),
+    onLogout(){
+      this.logout({path:'login'})
     }
   }
 }

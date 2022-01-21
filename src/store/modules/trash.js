@@ -16,15 +16,13 @@ const getters = {
     return state.trashNotes.find(note => note.id === state.curTrashNoteId) || {}
   },
   belongTo(state, getters, rootState, rootGetters) {
-    console.log(rootGetters.notebooks);
-    console.log(getters.curTrashNote);
     let notebook = rootGetters.notebooks.find(notebook => notebook.id === getters.curTrashNote.notebookId) || {}
     return notebook.title || ''
   }
 }
 
 const mutations = {
-  setTrashNotes(state, payload) {
+  setTrashNotes(state, payload={}) {
     state.trashNotes = payload.trashNotes
   },
   addTrashNote(state, payload) {
@@ -33,7 +31,7 @@ const mutations = {
   deleteTrashNote(state, payload) {
     state.trashNotes = state.trashNotes.filter(note => note.id !== payload.noteId)
   },
-  setCurTrashNote(state, payload) {
+  setCurTrashNote(state, payload={}) {
     state.curTrashNoteId = payload.curTrashNoteId
   }
 }

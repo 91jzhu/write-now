@@ -53,23 +53,49 @@ export default {
     }
   },
   created() {
-    this.checkLogin({path: '/login'})
-    this.getTrashNotes()
-    this.setCurTrashNote({curTrashNoteId: parseInt(this.$route.query.noteId || 0)})
+    this.checkLogin({path: 'login'})
     this.getNotebooks()
+    this.getTrashNotes().then(() => {
+      this.setCurTrashNote({curTrashNoteId: parseInt(this.$route.query.noteId || 0)})
+      if (!this.$route.query.noteId)
+        this.$router.replace({
+          path: '/trash',
+          query: {
+            noteId: this.curTrashNote.id
+          }
+        })
+    })
   },
   methods: {
     standard,
     ...mapMutations(['setCurTrashNote']),
-    ...mapActions(['checkLogin', 'getTrashNotes', 'deleteTrashNote', 'revertTrashNote','getNotebooks']),
+    ...mapActions(['checkLogin', 'getTrashNotes', 'deleteTrashNote', 'revertTrashNote', 'getNotebooks']),
     setCurrent(id) {
       this.setCurTrashNote({curTrashNoteId: id})
     },
     onRevert() {
       this.revertTrashNote({noteId: this.curTrashNote.id})
+        .then(() => {
+          this.setCurTrashNote()
+          this.$router.replace({
+            path: '/trash',
+            query: {
+              noteId: this.curTrashNote.id
+            }
+          })
+        })
     },
     onDelete() {
       this.deleteTrashNote({noteId: this.curTrashNote.id})
+        .then(() => {
+          this.setCurTrashNote()
+          this.$router.replace({
+            path: '/trash',
+            query: {
+              noteId: this.curTrashNote.id
+            }
+          })
+        })
     }
   }
 }

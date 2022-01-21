@@ -10,17 +10,17 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 export default {
   name: "Avatar.vue",
   data() {
-    return {
-    }
+    return {}
   },
-  created(){
-    this.checkLogin()
+  created() {
+    if (this.$route.path !== '/login')
+      this.checkLogin({path: 'login'})
   },
-  methods:{
+  methods: {
     ...mapActions(['checkLogin'])
   },
-  computed:{
-    ...mapGetters(['slug','username']),
+  computed: {
+    ...mapGetters(['slug', 'username']),
   }
 }
 </script>
