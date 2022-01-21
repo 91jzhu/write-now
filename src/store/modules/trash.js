@@ -14,6 +14,12 @@ const getters = {
     if (!state.trashNotes) return {}
     if (!state.curTrashNoteId) return state.trashNotes[0] || {}
     return state.trashNotes.find(note => note.id === state.curTrashNoteId) || {}
+  },
+  belongTo(state, getters, rootState, rootGetters) {
+    console.log(rootGetters.notebooks);
+    console.log(getters.curTrashNote);
+    let notebook = rootGetters.notebooks.find(notebook => notebook.id === getters.curTrashNote.notebookId) || {}
+    return notebook.title || ''
   }
 }
 
@@ -39,17 +45,17 @@ const actions = {
         commit('setTrashNotes', {trashNotes: res.data})
       })
   },
-  deleteTrashNote({commit},{noteId}){
+  deleteTrashNote({commit}, {noteId}) {
     return deleteNote({noteId})
-      .then(()=>{
-        commit('deleteTrashNote',{noteId})
+      .then(() => {
+        commit('deleteTrashNote', {noteId})
         Message.success('删除成功')
       })
   },
-  revertTrashNote({commit},{noteId}){
+  revertTrashNote({commit}, {noteId}) {
     return revertNote({noteId})
-      .then(()=>{
-        commit('deleteTrashNote',{noteId})
+      .then(() => {
+        commit('deleteTrashNote', {noteId})
         Message.info('已恢复笔记')
       })
   }

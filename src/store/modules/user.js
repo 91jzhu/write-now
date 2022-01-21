@@ -37,7 +37,9 @@ const actions = {
         commit('setUser',{user:res.data})
       })
   },
-  checkLogin({commit},payload){
+  checkLogin({commit,state},payload){
+    if(state.user)
+      return Promise.resolve()
     getInfo().then(res=>{
       if(res['login']){
         Router.push(payload).then()

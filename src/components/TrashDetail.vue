@@ -17,10 +17,10 @@
     </div>
 
     <div class="note-detail">
-      <div class="note-bar" v-if="true">
+      <div class="note-bar">
         <span> 创建日期: {{ curTrashNote['createdAt'] ? standard(curTrashNote['createdAt']) : '未知' }}</span>
         <span> 更新日期: {{ curTrashNote['updatedAt'] ? standard(curTrashNote['updatedAt']) : '未知' }}</span>
-        <!--        <span>所属笔记本: {{ curTrashNote.belongTo }}</span>-->
+        <span> 所属笔记本: {{ belongTo }}</span>
 
         <a class="btn action" @click="onRevert">恢复</a>
         <a class="btn action" @click="onDelete">彻底删除</a>
@@ -43,14 +43,11 @@ import {standard} from "../helpers/util";
 let md = new MarkDownIt()
 
 export default {
-  name: "TrashDetail.vue",
   data() {
-    return {
-      belongTo: ''
-    }
+    return {}
   },
   computed: {
-    ...mapGetters(['trashNotes', 'curTrashNote']),
+    ...mapGetters(['trashNotes', 'curTrashNote', 'belongTo']),
     preview() {
       return md.render(this.curTrashNote.content || '')
     }
@@ -59,13 +56,14 @@ export default {
     this.checkLogin({path: '/login'})
     this.getTrashNotes()
     this.setCurTrashNote({curTrashNoteId: parseInt(this.$route.query.noteId || 0)})
+    this.getNotebooks()
   },
   methods: {
     standard,
     ...mapMutations(['setCurTrashNote']),
-    ...mapActions(['checkLogin', 'getTrashNotes', 'deleteTrashNote', 'revertTrashNote']),
-    setCurrent(id){
-      this.setCurTrashNote({curTrashNoteId:id})
+    ...mapActions(['checkLogin', 'getTrashNotes', 'deleteTrashNote', 'revertTrashNote','getNotebooks']),
+    setCurrent(id) {
+      this.setCurTrashNote({curTrashNoteId: id})
     },
     onRevert() {
       this.revertTrashNote({noteId: this.curTrashNote.id})

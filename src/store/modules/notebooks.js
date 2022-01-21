@@ -36,7 +36,9 @@ const mutations = {
 }
 
 const actions = {
-  getNotebooks({commit}) {
+  getNotebooks({commit,state}) {
+    if(state.notebooks)
+      return Promise.resolve()
     return getAll()
       .then(res => {
         commit('setNotebooks', {notebooks: res.data})
